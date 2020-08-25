@@ -32,12 +32,17 @@ class Cookie extends Repository
             return;
         }
 
-        if (!$cookie = $this->request->cookie($this->config->get('tracker_cookie_name'))) {
-            $cookie = UUID::uuid4()->toString();
+        if ($this->request->cookie($this->config->get('tracker_cookie_name'))) {
+            $cookie = (string) UUID::uuid4();
 
             $this->cookieJar->queue($this->config->get('tracker_cookie_name'), $cookie, 0);
         }
 
-        return $this->findOrCreate(['uuid' => $cookie]);
+        $tracker_cookie = $this->where('uuid','LIKE',$cookie)->first();
+        if($tracker_cookie && $tracker_cookie->result) {
+            return $tracker_cookie->result->id;
+        } else {
+            return $this->create(['uuid' => $cookie])->id;
+        }
     }
 }
