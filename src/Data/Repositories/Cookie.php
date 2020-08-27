@@ -34,11 +34,10 @@ class Cookie extends Repository
 
         if ($this->request->cookie($this->config->get('tracker_cookie_name'))) {
             $cookie = (string) UUID::uuid4();
-
             $this->cookieJar->queue($this->config->get('tracker_cookie_name'), $cookie, 0);
+            $tracker_cookie = $this->where('uuid','LIKE',$cookie)->first();
         }
-
-        $tracker_cookie = $this->where('uuid','LIKE',$cookie)->first();
+        
         if($tracker_cookie && $tracker_cookie->result) {
             return $tracker_cookie->result->id;
         } else {
