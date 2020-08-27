@@ -38,7 +38,7 @@ class Cookie extends Repository
             $tracker_cookie = $this->where('uuid','LIKE',$cookie)->first();
         }
         
-        if($tracker_cookie && $tracker_cookie->result) {
+        if(isset($tracker_cookie) && $tracker_cookie->result) {
             return $tracker_cookie->result->id;
         } else {
             return $this->create(['uuid' => $cookie])->id;
